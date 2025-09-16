@@ -1,1 +1,1 @@
-my GROCERY APP PROJECT
+My Grocery App Project

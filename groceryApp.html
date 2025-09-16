@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .main-container{
+           max-width: 500px;
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container my-5">
+        <div class="card shadow p-4 mx-auto main-container">
+            <h3 class="text-center">
+                Grocery List
+            </h3>
+            <p class="text-center text-muted">Manage your grocery list</p>
+            <div class="input-group mb-3">
+                <input type="text" id="itemAddInput" class="form-control" placeholder="Enter grocery item...">
+                <button class="btn btn-dark" id="addItemBtn">+</button>
+            </div>
+            <div id="itemList" class="list-group mb-3"></div>
+            <p class="text-center fw-bold" id="totalItems">Total items to buy: 0</p>
+        </div>
+    </div>
+  <script>
+    const itemAddInput = document.getElementById("itemAddInput");
+    const addItemBtn = document.getElementById("addItemBtn");
+    const itemList = document.getElementById("itemList");
+    const totalItems = document.getElementById("totalItems");
+
+    let items = [];
+
+    addItemBtn.addEventListener("click", () => {
+      const name = itemAddInput.value.trim();
+    //   if (name) {
+    //     items.push({ name, qty: 1 });
+    //     itemAddInput.value = "";
+    //     displayItemsList();
+    //   }
+      if (!name) return;
+      if (items.some(item => item.name.toLowerCase() === name.toLowerCase())){
+        alert('This item already exists in your list!');
+        return
+      };
+      items.push({ name, qty: 1 });
+      console.log(items)
+      itemAddInput.value = "";
+      displayItemsList();
+    });
+
+    function totalCount() {
+      const total = items.reduce((sum, item) => sum + item.qty, 0);
+      totalItems.textContent = "Total items to buy: " + total;
+    }
+
+    function displayItemsList() {
+      itemList.innerHTML = "";
+      items.forEach((item, index) => {
+        const itemDiv = document.createElement("div");
+        itemDiv.className = "list-group-item d-flex justify-content-between align-items-center";
+
+        itemDiv.innerHTML = `
+          <button class="btn btn-outline-secondary btn-sm" onclick="decreaseQty(${index})">-</button>
+          <div class="mx-3 flex-grow-1">
+            <strong>${item.name}</strong><br>
+            <small class="text-muted">Qty: ${item.qty}</small>
+          </div>
+          <button class="btn btn-outline-secondary btn-sm" onclick="increaseQty(${index})">+</button>
+          <button class="btn btn-sm btn-danger ms-2" onclick="deleteItem(${index})">🗑</button>
+        `;
+
+        itemList.appendChild(itemDiv);
+      });
+      totalCount();
+    }
+
+    function increaseQty(index) {
+      items[index].qty++;
+      console.log(items[index].qty)
+      displayItemsList();
+    };
+
+    function decreaseQty(index) {
+      if (items[index].qty > 1) {
+        items[index].qty--;
+      } else {
+        items.splice(index, 1);
+      }
+      displayItemsList();
+    };
+
+    function deleteItem(index) {
+      items.splice(index, 1);
+      displayItemsList();
+    };
+
+  </script>
+
+</body>
+</html>
